@@ -147,7 +147,8 @@ const birthdays = [
         name: 'Júlia',
         day: 16,
         month: 10,
-        message: 'Parabéns ',
+        message:
+            'Parabéns, hoje a kpopper do server tá ficando mais velha, que venha mais um ano passando vergonha no gartic (guh que disse), feliz aniversário',
         userId: '833142400884539412',
     },
 ];
