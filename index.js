@@ -29,7 +29,7 @@ client.once('ready', () => {
     cron.schedule('0 0 * * *', () => {
         birthdays.forEach((birthday) => {
             if (birthday.day === currentDay && birthday.month === currentMonth) {
-                const channel = client.channels.cache.get('771512122534133761'); // ID do canal que quero exibir as mensagens
+                const channel = client.channels.cache.get('712456040154660939'); // ID do canal que quero exibir as mensagens
                 if (channel) {
                     const embed = new EmbedBuilder()
                         .setColor(0x0099ff)
