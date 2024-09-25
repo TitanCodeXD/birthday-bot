@@ -151,6 +151,27 @@ const birthdays = [
             'Parabéns, hoje a kpopper do server tá ficando mais velha, que venha mais um ano passando vergonha no gartic (guh que disse), feliz aniversário',
         userId: '833142400884539412',
     },
+    {
+        name: 'Nath',
+        day: 5,
+        month: 10,
+        message: 'Parabéns, hoje a drogada de zolpidem maluca faz aniversário!',
+        userId: '635009155551461376',
+    },
+    {
+        name: 'Gabriel',
+        day: 13,
+        month: 1,
+        message: 'Parabéns, hoje outro jogador caro do grupo faz aniversário!',
+        userId: '1138979459450552352',
+    },
+    {
+        name: 'Jooker',
+        day: 9,
+        month: 7,
+        message: 'Parabéns, hoje outro artista que humilha os outros faz aniversário ¬¬',
+        userId: '1275658740498038839',
+    },
 ];
 
 module.exports = birthdays;
