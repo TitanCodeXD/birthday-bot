@@ -172,6 +172,14 @@ const birthdays = [
         message: 'Parabéns, hoje outro artista que humilha os outros faz aniversário ¬¬',
         userId: '1275658740498038839',
     },
+    {
+        name: 'Servidor Gartiqueiros',
+        day: 19,
+        month: 5,
+        message:
+            'Parabéns para O SERVIDOR, criado em 19 de maior de 2020, numa terça-feira, agrupando pessoas de um jogo de desenho bobinho, mas que levou a termos muitas amizades incríveis.',
+        userId: '712456040154660935',
+    },
 ];
 
 module.exports = birthdays;
