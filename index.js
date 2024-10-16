@@ -17,41 +17,44 @@ const client = new Client({
 
 // AO FICAR NO AR
 client.once('ready', () => {
-    //Variáveis de data
-    const today = new Date();
-    const currentYear = today.getFullYear();
-    const currentDay = today.getDate();
-    const currentMonth = today.getMonth() + 1; // getMonth() retorna de 0 a 11
-    console.log(currentDay, currentMonth);
-    console.log(`Bot online como ${client.user.tag}!`);
-
     // Configura a tarefa para rodar todo dia à meia-noite
-    cron.schedule('0 0 * * *', () => {
-        birthdays.forEach((birthday) => {
-            if (birthday.day === currentDay && birthday.month === currentMonth) {
-                const channel = client.channels.cache.get('712456040154660939'); // ID do canal que quero exibir as mensagens
-                if (channel) {
-                    const embed = new EmbedBuilder()
-                        .setColor(0x0099ff)
-                        .setTitle(`🎉 Hoje é aniversário de ${birthday.name}! 🎉`)
-                        .setDescription(
-                            `Hoje é aniversário de <@${birthday.userId}>! ${birthday.message}`
-                        )
-                        .setThumbnail(
-                            'https://mir-s3-cdn-cf.behance.net/project_modules/hd/279f0158060483.59ee4e804c846.gif'
-                        )
-                        .setImage(
-                            'https://mir-s3-cdn-cf.behance.net/project_modules/hd/279f0158060483.59ee4e804c846.gif'
-                        );
-                    channel.send({
-                        embeds: [embed],
-                    });
-                } else {
-                    console.log('Canal não encontrado!');
+    cron.schedule(
+        '0 0 * * *',
+        () => {
+            const today = new Date();
+            const currentDay = today.getDate();
+            const currentMonth = today.getMonth() + 1; // getMonth() retorna de 0 a 11
+
+            birthdays.forEach((birthday) => {
+                if (birthday.day === currentDay && birthday.month === currentMonth) {
+                    const channel = client.channels.cache.get('712456040154660939'); // ID do canal que quero exibir as mensagens
+                    if (channel) {
+                        const embed = new EmbedBuilder()
+                            .setColor(0x0099ff)
+                            .setTitle(`🎉 Hoje é aniversário de ${birthday.name}! 🎉`)
+                            .setDescription(
+                                `Hoje é aniversário de <@${birthday.userId}>! ${birthday.message}`
+                            )
+                            .setThumbnail(
+                                'https://mir-s3-cdn-cf.behance.net/project_modules/hd/279f0158060483.59ee4e804c846.gif'
+                            )
+                            .setImage(
+                                'https://mir-s3-cdn-cf.behance.net/project_modules/hd/279f0158060483.59ee4e804c846.gif'
+                            );
+                        channel.send({
+                            embeds: [embed],
+                        });
+                    } else {
+                        console.log('Canal não encontrado!');
+                    }
                 }
-            }
-        });
-    });
+            });
+        },
+        {
+            scheduled: true,
+            timezone: 'America/Sao_Paulo', // Define o fuso horário de São Paulo
+        }
+    );
 });
 
 // Crianção da lista de comandos caso seja marcado o bot
@@ -110,12 +113,13 @@ client.on('messageCreate', (message) => {
 
 // Criação de outro comando - Ver aniversariantes do mês do atual
 client.on('messageCreate', (message) => {
+    let today = new Date();
+    let currentYear = today.getFullYear();
+    let currentDay = today.getDate();
+    let currentMonth = today.getMonth() + 1; // getMonth() retorna de 0 a 11
+
     if (message.content === '!mes') {
         //Variáveis de data
-        const today = new Date();
-        const currentYear = today.getFullYear();
-        const currentDay = today.getDate();
-        const currentMonth = today.getMonth() + 1; // getMonth() retorna de 0 a 11
 
         let birthdayListMonth = '🎂 **Aniversáriantes do mês atual** 🎉\n';
         let birthdayListMonthUsers = '';
@@ -152,24 +156,71 @@ client.on('messageCreate', (message) => {
     }
 });
 
-// Criação de outro comando - Mostrar próximos aniversários mais próximos
-client.on('messageCreate', (message) => {
-    //Variáveis de data
+// Função para calcular o próximo aniversário
+const getNextBirthdayDate = (birthday) => {
     const today = new Date();
     const currentYear = today.getFullYear();
-    const currentDay = today.getDate();
-    const currentMonth = today.getMonth() + 1; // getMonth() retorna de 0 a 11
+    let birthdayDate = new Date(currentYear, birthday.month - 1, birthday.day); // Mês é 0-indexado
+    if (birthdayDate < today) {
+        // Se o aniversário já passou este ano, definir para o próximo ano
+        birthdayDate.setFullYear(currentYear + 1);
+    }
+    return birthdayDate;
+};
 
+// Função para enviar os próximos aniversários em múltiplas mensagens
+async function sendUpcomingBirthdays(message, upcomingBirthdays) {
+    const maxFieldsPerEmbed = 25;
+    const today = new Date();
+    let currentEmbed = new EmbedBuilder()
+        .setColor('#FFDD00') // Cor do cabeçalho
+        .setTitle('🎂 Próximos Aniversários do Servidor 🎉')
+        .setThumbnail(
+            'https://mir-s3-cdn-cf.behance.net/project_modules/hd/279f0158060483.59ee4e804c846.gif'
+        ) // Thumbnail
+        .setFooter({
+            text: 'Fique atento para celebrar os aniversários!',
+            iconURL:
+                'https://mir-s3-cdn-cf.behance.net/project_modules/hd/279f0158060483.59ee4e804c846.gif',
+        });
+
+    // Itera sobre os aniversários e cria embeds
+    upcomingBirthdays.forEach((birthday, index) => {
+        if (index > 0 && index % maxFieldsPerEmbed === 0) {
+            // Envia o embed atual quando atingir 25 campos
+            message.channel.send({ embeds: [currentEmbed] });
+            currentEmbed = new EmbedBuilder()
+                .setColor('#FFDD00')
+                .setTitle('🎂 Próximos Aniversários do Servidor 🎉')
+                .setThumbnail(
+                    'https://mir-s3-cdn-cf.behance.net/project_modules/hd/279f0158060483.59ee4e804c846.gif'
+                )
+                .setFooter({
+                    text: 'Fique atento para celebrar os aniversários!',
+                    iconURL:
+                        'https://mir-s3-cdn-cf.behance.net/project_modules/hd/279f0158060483.59ee4e804c846.gif',
+                });
+        }
+
+        const daysUntilBirthday = Math.ceil((birthday.date - today) / (1000 * 60 * 60 * 24)); // Diferença em dias
+
+        // Adiciona o aniversário ao embed
+        currentEmbed.addFields({
+            name: `🎈 ${birthday.name} (${birthday.day}/${birthday.month})`,
+            value: `<@${birthday.userId}> **${daysUntilBirthday}** dias restantes\n\n\n`,
+        });
+    });
+
+    // Envia o último embed se houver campos restantes
+    if (currentEmbed.data.fields.length > 0) {
+        message.channel.send({ embeds: [currentEmbed] });
+    }
+}
+
+// Criação do comando para mostrar os próximos aniversários
+client.on('messageCreate', (message) => {
     if (message.content === '!proximos') {
-        // Função para calcular a data do próximo aniversário
-        const getNextBirthdayDate = (birthday) => {
-            let birthdayDate = new Date(currentYear, birthday.month - 1, birthday.day); // Mês é 0-indexado
-            if (birthdayDate < today) {
-                // Se a data já passou neste ano, definir para o próximo ano
-                birthdayDate.setFullYear(currentYear + 1);
-            }
-            return birthdayDate;
-        };
+        const today = new Date();
 
         // Calculando e ordenando os aniversários mais próximos
         const upcomingBirthdays = birthdays
@@ -179,29 +230,8 @@ client.on('messageCreate', (message) => {
             }))
             .sort((a, b) => a.date - b.date);
 
-        // Criando uma embed
-        const upcomingBirthdayEmbed = new EmbedBuilder()
-            .setColor('#FFDD00') // Cor do cabeçalho
-            .setTitle('🎂 Próximos Aniversários do Servidor 🎉')
-            .setThumbnail(
-                'https://mir-s3-cdn-cf.behance.net/project_modules/hd/279f0158060483.59ee4e804c846.gif'
-            ) // Thumbnail
-            .setFooter({
-                text: 'Fique atento para celebrar os aniversários!',
-                iconURL:
-                    'https://mir-s3-cdn-cf.behance.net/project_modules/hd/279f0158060483.59ee4e804c846.gif',
-            });
-
-        // Adicionando os próximos aniversários à embed
-        upcomingBirthdays.forEach((birthday) => {
-            const daysUntilBirthday = Math.ceil((birthday.date - today) / (1000 * 60 * 60 * 24)); // Diferença em dias
-            upcomingBirthdayEmbed.addFields({
-                name: `🎈 ${birthday.name} (${birthday.day}/${birthday.month})`,
-                value: `<@${birthday.userId}> **${daysUntilBirthday}** dias restantes\n\n\n`,
-            });
-        });
-
-        message.channel.send({ embeds: [upcomingBirthdayEmbed] });
+        // Envia os aniversários em múltiplas mensagens
+        sendUpcomingBirthdays(message, upcomingBirthdays);
     }
 });
 

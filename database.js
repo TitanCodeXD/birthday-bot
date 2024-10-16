@@ -90,7 +90,8 @@ const birthdays = [
         name: 'Lana',
         day: 12,
         month: 12,
-        message: 'Parabéns para uma tóxica, porém amável e fofa (quando quer rs)',
+        message:
+            'Parabéns para uma tóxica, para nossa titia que suporta seus sobrinhos incansavelmente, para amante do axl rose, mas que além disso tudo, é amável e fofa (quando quer rs)',
         userId: '876351504917860374',
     },
     {
@@ -179,6 +180,21 @@ const birthdays = [
         message:
             'Parabéns para O SERVIDOR, criado em 19 de maior de 2020, numa terça-feira, agrupando pessoas de um jogo de desenho bobinho, mas que levou a termos muitas amizades incríveis.',
         userId: '712456040154660935',
+    },
+    {
+        name: 'Christopher',
+        day: 18,
+        month: 10,
+        message:
+            'Até que você é legal para um Nazi u.u Parabéns para a chama do server 🔥 (fenix) e também porque ele é a própria chama para alguns cough guh cough',
+        userId: '307415559547518986',
+    },
+    {
+        name: 'Matheus',
+        day: 25,
+        month: 3,
+        message: 'Parabéns Sr.Eremito, uns dos precursores do eiro eira ista isto',
+        userId: '1013189705598259292',
     },
 ];
 
